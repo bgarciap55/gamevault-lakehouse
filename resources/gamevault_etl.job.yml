@@ -1,0 +1,32 @@
+# Job del ETL. Las tareas no declaran cluster, así que corren en serverless
+# (lo único que hay en Free Edition). En Azure se puede agregar un job cluster.
+
+resources:
+  jobs:
+    gamevault_etl:
+      name: gamevault_etl_${bundle.target}
+
+      parameters:
+        - name: catalogo
+          default: ${var.catalogo}
+        - name: modo_fuente
+          default: ${var.modo_fuente}
+        - name: ruta_raw
+          default: ${var.ruta_raw}
+        - name: ruta_bronze
+          default: ${var.ruta_bronze}
+        - name: formato_bronze
+          default: ${var.formato_bronze}
+        - name: pg_url
+          default: ${var.pg_url}
+
+      tasks:
+        - task_key: preparar_catalogo
+          notebook_task:
+            notebook_path: ../src/notebooks/00_preparar_catalogo.py
+
+        - task_key: bronze
+          depends_on:
+            - task_key: preparar_catalogo
+          notebook_task:
+            notebook_path: ../src/notebooks/01_bronze.py
