@@ -7,6 +7,9 @@
 # MAGIC
 # MAGIC Usa el SDK de Databricks en lugar de `CREATE CATALOG`, porque el proyecto no usa SQL.
 # MAGIC Se puede correr cuantas veces se quiera: lo que ya existe no se toca.
+# MAGIC
+# MAGIC En Free Edition el catálogo hay que crearlo una vez desde la interfaz (Catalog > + > Create catalog,
+# MAGIC Default Storage), porque ahí no se puede por código. El notebook lo detecta y lo explica.
 
 # COMMAND ----------
 
@@ -19,7 +22,7 @@ modo_fuente = dbutils.widgets.get("modo_fuente")
 # COMMAND ----------
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.errors import NotFound
+from databricks.sdk.errors import InvalidState, NotFound
 from databricks.sdk.service.catalog import VolumeType
 
 w = WorkspaceClient()
@@ -46,7 +49,14 @@ def existe(leer):
 if existe(lambda: w.catalogs.get(catalogo)):
     print(f"Catálogo {catalogo}: ya existe")
 else:
-    w.catalogs.create(name=catalogo, comment="GameVault: versiones, plataformas y remakes de videojuegos")
+    try:
+        w.catalogs.create(name=catalogo, comment="GameVault: versiones, plataformas y remakes de videojuegos")
+    except InvalidState as e:
+        # Free Edition (Default Storage) solo permite crear catálogos desde la interfaz
+        raise RuntimeError(
+            f"No se pudo crear el catálogo {catalogo} por código. Créalo en Catalog > + > Create catalog "
+            f"(nombre {catalogo}, tipo Standard, Default Storage) y vuelve a correr este notebook."
+        ) from e
     print(f"Catálogo {catalogo}: creado")
 
 for esquema, comentario in ESQUEMAS.items():
