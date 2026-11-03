@@ -11,6 +11,8 @@ PROHIBIDO = [
     re.compile(r"^#\s*MAGIC\s+%sql", re.MULTILINE),
     re.compile(r"\bselectExpr\s*\("),
     re.compile(r"\bF\.expr\s*\("),
+    # filter("x > 1") y where("...") reciben una expresión SQL en texto
+    re.compile(r"\.(filter|where)\s*\(\s*f?[\"']"),
 ]
 
 
