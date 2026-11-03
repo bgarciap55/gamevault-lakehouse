@@ -1,0 +1,42 @@
+# Databricks Asset Bundle de GameVault.
+# El workspace sale de tu perfil de la CLI (databricks auth login) o de las
+# variables DATABRICKS_HOST y DATABRICKS_TOKEN en GitHub Actions.
+
+bundle:
+  name: gamevault-lakehouse
+
+include:
+  - resources/*.yml
+
+variables:
+  catalogo:
+    description: Catálogo de Unity Catalog del ambiente
+  modo_fuente:
+    description: "volume (etapa 1: todo en un Volume) o externo (etapa 2: ADLS + PostgreSQL)"
+    default: volume
+  ruta_raw:
+    description: "Datos crudos. Vacío = /Volumes/<catálogo>/bronze/raw"
+    default: ""
+  ruta_bronze:
+    description: "Salida de bronze. Vacío = /Volumes/<catálogo>/bronze/archivos"
+    default: ""
+  formato_bronze:
+    description: parquet o avro
+    default: parquet
+  pg_url:
+    description: "JDBC de PostgreSQL, solo en modo externo (jdbc:postgresql://<servidor>:5432/<base>?sslmode=require)"
+    default: ""
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      catalogo: gamevault_dev
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalogo: gamevault_prod
