@@ -17,8 +17,9 @@ def bronze(spark):
         [
             (1029, "The Legend of Zelda: Ocarina of Time", "the-legend-of-zelda-ocarina-of-time", 0, UNIX_1998,
              [4], [1039], None, 91.6, 100, 1),
+            # El remake también trae parent_game = 1029, como pasa en IGDB
             (1039, "The Legend of Zelda: Ocarina of Time 3D", "the-legend-of-zelda-ocarina-of-time-3d", 8, UNIX_2011,
-             [37], None, None, 88.0, 50, 1),
+             [37], None, 1029, 88.0, 50, 1),
             (1040, "The Legend of Zelda: Ocarina of Time - Master Quest", "master-quest", 4, None,
              [21], None, 1029, None, None, 1),
             # Fila repetida más vieja: ultima_version debe descartarla

@@ -30,6 +30,10 @@ REGIONES_IGDB = [
 ]
 
 
+# Si un mismo par aparece con varias relaciones, gana la primera de esta lista
+PRIORIDAD_RELACIONES = ["remake", "remaster", "port", "expanded_game", "edition", "addon"]
+
+
 def columna(df: DataFrame, nombre: str, tipo: str = "string"):
     """La columna si existe; si no, nulos. IGDB agrega y renombra campos con el tiempo."""
     return F.col(nombre).cast(tipo) if nombre in df.columns else F.lit(None).cast(tipo)
@@ -149,7 +153,7 @@ def game_relations(b_games: DataFrame) -> DataFrame:
             .withColumn("relation_type", F.lit(relacion))
         )
 
-    return (
+    relaciones = (
         desde_lista("remakes", "remake")
         .unionByName(desde_lista("remasters", "remaster"))
         .unionByName(desde_lista("ports", "port"))
@@ -157,7 +161,17 @@ def game_relations(b_games: DataFrame) -> DataFrame:
         .unionByName(desde_puntero("version_parent", "edition"))
         .unionByName(desde_puntero("parent_game", "addon"))
         .filter(F.col("related_game_id").isNotNull())
-        .dropDuplicates()
+    )
+    # IGDB a veces marca el mismo par de dos formas (un remake que además tiene
+    # parent_game). Nos quedamos con la relación más específica.
+    prioridad = F.lit(len(PRIORIDAD_RELACIONES))
+    for i, relacion in reversed(list(enumerate(PRIORIDAD_RELACIONES))):
+        prioridad = F.when(F.col("relation_type") == relacion, i).otherwise(prioridad)
+    w = Window.partitionBy("game_id", "related_game_id").orderBy(prioridad)
+    return (
+        relaciones.withColumn("_rn", F.row_number().over(w))
+        .filter(F.col("_rn") == 1)
+        .drop("_rn")
     )
 
 
