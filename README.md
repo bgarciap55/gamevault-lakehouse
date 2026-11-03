@@ -46,12 +46,12 @@ Para pasar a la etapa 2 solo cambian las variables del bundle; el código de bro
 1. Instala la [CLI de Databricks](https://docs.databricks.com/aws/en/dev-tools/cli/install) e inicia sesión:
    `databricks auth login --host https://<tu-workspace>`
 2. Despliega en dev: `databricks bundle deploy -t dev`
-3. Corre el Job una vez para crear el catálogo y los Volumes: `databricks bundle run gamevault_etl -t dev`
+3. Crea el catálogo y los Volumes corriendo solo la primera tarea: `databricks bundle run gamevault_etl -t dev --only preparar_catalogo`
 4. Sube los datos al Volume `bronze.raw` (Catalog Explorer > Upload) con esta forma:
    - `igdb/games/*.jsonl`, `igdb/platforms/*.jsonl`, ... (lo que genera `igdb_descarga.py`)
    - `postgres/rawg_games.csv` (el CSV de RAWG de Kaggle, renombrado)
    - `postgres/mis_plataformas.csv` y `postgres/mi_biblioteca.csv` (copia las de `datos_ejemplo/` y edítalas)
-5. Vuelve a correr el Job.
+5. Corre el Job completo: `databricks bundle run gamevault_etl -t dev`
 
 ## Pruebas locales
 
