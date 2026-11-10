@@ -107,6 +107,13 @@ Antes del primer despliegue a prod hay que crear el catálogo `gamevault_prod` y
 | 2026-11-03 | Free Edition, `gamevault_dev` | Job completo en 3m44s. Bronze: 17.356 juegos IGDB, 74.847 lanzamientos, 474.417 filas RAWG. Silver: 10.322 juegos IGDB con pareja en RAWG (59 %). |
 | 2026-11-03 | Free Edition, `gamevault_dev` | Corrección de relaciones duplicadas: Ocarina of Time muestra 3 versiones correctas (1 addon, Master Quest, y 2 remakes) |
 
+## Uso de herramientas de IA
+
+Este proyecto se desarrolló con apoyo de Claude (Anthropic) como asistente de programación. El historial de commits y los pull requests lo muestran.
+
+- **Autor:** definió el tema, las fuentes, la arquitectura y las decisiones de diseño; desplegó y ejecutó el ETL en Databricks y validó los resultados (conteos, casos como Ocarina of Time).
+- **Claude:** propuso la estructura y redactó buena parte del código PySpark, las pruebas, los workflows y la documentación, que el autor revisó y aprobó en cada pull request.
+
 ## Pruebas locales
 
 Requiere Python 3.11 y Java 17. Desde `databricks-app/`:
