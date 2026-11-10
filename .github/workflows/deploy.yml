@@ -1,0 +1,41 @@
+# CD: despliega el bundle en producción y corre el ETL cada vez que algo entra a main.
+#
+# Hace lo mismo que el script de referencia del curso (script3.yml): sube los notebooks,
+# crea o actualiza el Job, lo ejecuta y espera a que termine. La diferencia es que lo
+# hace con `databricks bundle`, que actualiza el Job en lugar de borrarlo y recrearlo.
+#
+# Requiere en el repo (Settings > Secrets and variables > Actions):
+#   variable DATABRICKS_HOST  (https://<tu-workspace>)
+#   secreto  DATABRICKS_TOKEN (token de acceso personal)
+
+name: CD a producción
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  desplegar-prod:
+    name: Desplegar y ejecutar en prod
+    runs-on: ubuntu-latest
+    if: vars.DATABRICKS_HOST != ''
+    environment: produccion
+    env:
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    defaults:
+      run:
+        working-directory: databricks-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+
+      - name: Validar el bundle
+        run: databricks bundle validate -t prod
+
+      - name: Desplegar notebooks y Job
+        run: databricks bundle deploy -t prod
+
+      - name: Ejecutar el ETL y esperar el resultado
+        run: databricks bundle run gamevault_etl -t prod

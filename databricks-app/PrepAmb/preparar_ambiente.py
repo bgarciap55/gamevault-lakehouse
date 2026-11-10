@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # 00 · Preparar el catálogo
+# MAGIC # PrepAmb · Preparar el ambiente
 # MAGIC
 # MAGIC Crea, si no existen, el catálogo del ambiente, sus esquemas `bronze`, `silver` y `gold` y,
 # MAGIC en la etapa 1, los Volumes `bronze.raw` (datos crudos) y `bronze.archivos` (salida de bronze).

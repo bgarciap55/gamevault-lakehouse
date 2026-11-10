@@ -15,8 +15,8 @@
 import os
 import sys
 
-# El paquete gamevault vive en src/, una carpeta arriba de este notebook
-sys.path.insert(0, os.path.abspath(".."))
+# El paquete gamevault está en esta misma carpeta (proceso/gamevault)
+sys.path.insert(0, os.path.abspath("."))
 
 from pyspark.errors import AnalysisException
 
