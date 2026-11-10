@@ -23,22 +23,22 @@ resources:
       tasks:
         - task_key: preparar_catalogo
           notebook_task:
-            notebook_path: ../src/notebooks/00_preparar_catalogo.py
+            notebook_path: ../PrepAmb/preparar_ambiente.py
 
         - task_key: bronze
           depends_on:
             - task_key: preparar_catalogo
           notebook_task:
-            notebook_path: ../src/notebooks/01_bronze.py
+            notebook_path: ../proceso/01_bronze.py
 
         - task_key: silver
           depends_on:
             - task_key: bronze
           notebook_task:
-            notebook_path: ../src/notebooks/02_silver.py
+            notebook_path: ../proceso/02_silver.py
 
         - task_key: gold
           depends_on:
             - task_key: silver
           notebook_task:
-            notebook_path: ../src/notebooks/03_gold.py
+            notebook_path: ../proceso/03_gold.py
