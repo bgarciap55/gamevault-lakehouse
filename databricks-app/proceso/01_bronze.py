@@ -47,9 +47,9 @@ cfg = Config(
     ruta_bronze=dbutils.widgets.get("ruta_bronze"),
     formato_bronze=dbutils.widgets.get("formato_bronze"),
     pg_url=dbutils.widgets.get("pg_url"),
-    # Las credenciales nunca van en el código: salen del secret scope "gamevault"
-    pg_usuario=dbutils.secrets.get("gamevault", "pg_usuario") if modo_fuente == "externo" else "",
-    pg_clave=dbutils.secrets.get("gamevault", "pg_clave") if modo_fuente == "externo" else "",
+    # Las credenciales nunca van en el código: salen del secret scope "gamevault" (Azure Key Vault)
+    pg_usuario=dbutils.secrets.get("gamevault", "pg-usuario") if modo_fuente == "externo" else "",
+    pg_clave=dbutils.secrets.get("gamevault", "pg-clave") if modo_fuente == "externo" else "",
 )
 print(cfg)
 

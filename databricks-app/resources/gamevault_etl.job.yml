@@ -1,4 +1,4 @@
-# Job del ETL: preparar_catalogo -> bronze -> silver -> gold. Las tareas no declaran cluster, así que corren en serverless
+# Job del ETL: preparar_catalogo -> bronze -> silver -> gold -> serving. Las tareas no declaran cluster, así que corren en serverless
 # (lo único que hay en Free Edition). En Azure se puede agregar un job cluster.
 
 resources:
@@ -19,6 +19,12 @@ resources:
           default: ${var.formato_bronze}
         - name: pg_url
           default: ${var.pg_url}
+        - name: pg_url_serving
+          default: ${var.pg_url_serving}
+        - name: cuenta_adls
+          default: ${var.cuenta_adls}
+        - name: credencial
+          default: ${var.credencial}
 
       tasks:
         - task_key: preparar_catalogo
@@ -42,3 +48,9 @@ resources:
             - task_key: silver
           notebook_task:
             notebook_path: ../proceso/03_gold.py
+
+        - task_key: serving
+          depends_on:
+            - task_key: gold
+          notebook_task:
+            notebook_path: ../proceso/04_serving.py
