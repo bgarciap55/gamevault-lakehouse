@@ -22,6 +22,8 @@ dbutils.widgets.text("catalogo", "gamevault_dev", "Catálogo")
 dbutils.widgets.dropdown("modo_fuente", "volume", ["volume", "externo"], "Modo de fuente")
 dbutils.widgets.text("cuenta_adls", "", "Cuenta ADLS Gen2 (solo externo)")
 dbutils.widgets.text("credencial", "cred_gamevault", "Storage credential (solo externo)")
+dbutils.widgets.text("access_connector_id", "", "Id. de recurso del Access Connector (solo si hay que crear la credencial)")
+dbutils.widgets.text("identidad_id", "", "Id. de recurso de la identidad administrada (solo si hay que crear la credencial)")
 
 catalogo = dbutils.widgets.get("catalogo")
 modo_fuente = dbutils.widgets.get("modo_fuente")
@@ -35,7 +37,7 @@ if modo_fuente == "externo" and not cuenta_adls:
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.errors import InvalidState, NotFound
-from databricks.sdk.service.catalog import VolumeType
+from databricks.sdk.service.catalog import AzureManagedIdentityRequest, VolumeType
 
 w = WorkspaceClient()
 
@@ -84,6 +86,29 @@ def url_contenedor(contenedor):
 
 if modo_fuente == "externo":
     for contenedor, comentario in CONTENEDORES.items():
+     # Evidencia: en qué metastore estamos trabajando
+metastore = w.metastores.summary()
+print(f"Metastore: {metastore.name} ({metastore.region}) -> {metastore.storage_root}")
+
+if modo_fuente == "externo":
+    if existe(lambda: w.storage_credentials.get(credencial)):
+        print(f"Credencial {credencial}: ya existe")
+    else:
+        access_connector_id = dbutils.widgets.get("access_connector_id")
+        identidad_id = dbutils.widgets.get("identidad_id")
+        if not access_connector_id or not identidad_id:
+            raise ValueError(
+                f"No existe la credencial {credencial}: indica access_connector_id e identidad_id para crearla"
+            )
+        w.storage_credentials.create(
+            name=credencial,
+            azure_managed_identity=AzureManagedIdentityRequest(
+                access_connector_id=access_connector_id,
+                managed_identity_id=identidad_id,
+            ),
+            comment="Identidad administrada id-gamevault con acceso al data lake",
+        )
+        print(f"Credencial {credencial}: creada")   
         nombre = f"ext_{contenedor}"
         if existe(lambda: w.external_locations.get(nombre)):
             print(f"Ubicación externa {nombre}: ya existe")
