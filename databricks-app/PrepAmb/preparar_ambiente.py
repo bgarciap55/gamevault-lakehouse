@@ -83,10 +83,7 @@ def url_contenedor(contenedor):
 # MAGIC *Storage Blob Data Contributor* sobre la cuenta.
 
 # COMMAND ----------
-
-if modo_fuente == "externo":
-    for contenedor, comentario in CONTENEDORES.items():
-     # Evidencia: en qué metastore estamos trabajando
+# Evidencia: en qué metastore estamos trabajando
 metastore = w.metastores.summary()
 print(f"Metastore: {metastore.name} ({metastore.region}) -> {metastore.storage_root}")
 
@@ -108,7 +105,10 @@ if modo_fuente == "externo":
             ),
             comment="Identidad administrada id-gamevault con acceso al data lake",
         )
-        print(f"Credencial {credencial}: creada")   
+        print(f"Credencial {credencial}: creada")
+
+if modo_fuente == "externo":
+    for contenedor, comentario in CONTENEDORES.items():
         nombre = f"ext_{contenedor}"
         if existe(lambda: w.external_locations.get(nombre)):
             print(f"Ubicación externa {nombre}: ya existe")
