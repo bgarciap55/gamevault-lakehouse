@@ -73,7 +73,7 @@ Para pasar a la etapa 2 solo cambian las variables del bundle; el código de bro
 | --- | --- | --- |
 | Grupo de recursos | `rg-gamevault` | Agrupa todo el proyecto |
 | ADLS Gen2 | `stgamevaultbg64` | Contenedores `landing` (fuente IGDB), `bronze` y `catalogo` (tablas Delta) |
-| PostgreSQL flexible | `pg-gamevault-bg64` | Bases `gamevault_origen` (fuente 2) y `gamevault_serving` (salida para Power BI) |
+| PostgreSQL flexible | `pg-gamevault-bg64` | Bases `gamevault_source` (fuente 2) y `gamevault_serving` (salida para Power BI) |
 | Key Vault | `kv-gamevault-bg64` | Secretos `pg-usuario` y `pg-clave`, leídos desde el secret scope `gamevault` |
 | Identidad administrada | `id-gamevault` | Identidad con *Storage Blob Data Contributor* sobre el data lake |
 | Access Connector | `ac-gamevault` | Puente entre Databricks y la identidad (storage credential `cred_gamevault`) |

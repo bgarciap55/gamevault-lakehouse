@@ -3,7 +3,7 @@
 # MAGIC # Datasets · Cargar la base de origen en PostgreSQL
 # MAGIC
 # MAGIC Se corre **una sola vez** para simular el sistema transaccional de origen: toma los CSV que subiste a
-# MAGIC `landing/postgres/` en el data lake y los escribe como tablas en la base `gamevault_origen`.
+# MAGIC `landing/postgres/` en el data lake y los escribe como tablas en la base `gamevault_source`.
 # MAGIC Después el ETL (`proceso/01_bronze.py`) los lee de PostgreSQL por JDBC, como de cualquier sistema real.
 # MAGIC
 # MAGIC | CSV en `landing/postgres/` | Tabla en PostgreSQL |
@@ -19,7 +19,7 @@
 dbutils.widgets.text("ruta_csv", "abfss://landing@stgamevaultbg64.dfs.core.windows.net/postgres", "Carpeta de los CSV")
 dbutils.widgets.text(
     "pg_url",
-    "jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_origen?sslmode=require",
+    "jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require",
     "JDBC de la base de origen",
 )
 
@@ -50,4 +50,4 @@ for tabla in TABLAS:
         .option("batchsize", 10000)
         .save()
     )
-    print(f"  {tabla:<18} {df.count():>9,} filas -> gamevault_origen.public.{tabla}")
+    print(f"  {tabla:<18} {df.count():>9,} filas -> gamevault_source.public.{tabla}")

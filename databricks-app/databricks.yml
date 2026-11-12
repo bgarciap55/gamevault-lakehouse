@@ -48,8 +48,8 @@ targets:
       cuenta_adls: stgamevaultbg64
       ruta_raw: abfss://landing@stgamevaultbg64.dfs.core.windows.net
       ruta_bronze: abfss://bronze@stgamevaultbg64.dfs.core.windows.net/gamevault_dev
-      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_origen?sslmode=require
-      pg_url_serving: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_serving_dev?sslmode=require
+      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require
+      pg_url_serving: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_serving?sslmode=require
 
   prod:
     mode: production
@@ -61,7 +61,7 @@ targets:
       cuenta_adls: stgamevaultbg64
       ruta_raw: abfss://landing@stgamevaultbg64.dfs.core.windows.net
       ruta_bronze: abfss://bronze@stgamevaultbg64.dfs.core.windows.net/gamevault_prod
-      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_origen?sslmode=require
+      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require
       pg_url_serving: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_serving?sslmode=require
 
   # Etapa 1 en Databricks Free Edition: todo en Volumes de Unity Catalog
