@@ -24,15 +24,32 @@ variables:
     description: parquet o avro
     default: parquet
   pg_url:
-    description: "JDBC de PostgreSQL, solo en modo externo (jdbc:postgresql://<servidor>:5432/<base>?sslmode=require)"
+    description: "JDBC de la base de origen en PostgreSQL, solo en modo externo (jdbc:postgresql://<servidor>:5432/<base>?sslmode=require)"
     default: ""
+  pg_url_serving:
+    description: "JDBC de la base de servicio donde se publica gold para Power BI. Vacío = no se publica"
+    default: ""
+  cuenta_adls:
+    description: "Cuenta de ADLS Gen2 (solo modo externo): PrepAmb crea sobre ella las ubicaciones externas y el catálogo"
+    default: ""
+  credencial:
+    description: "Storage credential de Unity Catalog con la identidad administrada (solo modo externo)"
+    default: cred_gamevault
 
 targets:
+  # Etapa 2 en Azure: ADLS Gen2 + PostgreSQL. La identidad administrada id-gamevault da acceso al data lake
+  # y las credenciales de PostgreSQL salen del secret scope "gamevault" (respaldado por Azure Key Vault).
   dev:
     mode: development
     default: true
     variables:
       catalogo: gamevault_dev
+      modo_fuente: externo
+      cuenta_adls: stgamevaultbg64
+      ruta_raw: abfss://landing@stgamevaultbg64.dfs.core.windows.net
+      ruta_bronze: abfss://bronze@stgamevaultbg64.dfs.core.windows.net/gamevault_dev
+      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require
+      pg_url_serving: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_serving?sslmode=require
 
   prod:
     mode: production
@@ -40,3 +57,15 @@ targets:
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
     variables:
       catalogo: gamevault_prod
+      modo_fuente: externo
+      cuenta_adls: stgamevaultbg64
+      ruta_raw: abfss://landing@stgamevaultbg64.dfs.core.windows.net
+      ruta_bronze: abfss://bronze@stgamevaultbg64.dfs.core.windows.net/gamevault_prod
+      pg_url: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require
+      pg_url_serving: jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_serving?sslmode=require
+
+  # Etapa 1 en Databricks Free Edition: todo en Volumes de Unity Catalog
+  free:
+    mode: development
+    variables:
+      catalogo: gamevault_dev

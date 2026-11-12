@@ -32,9 +32,11 @@ databricks-app/
   proceso/01_bronze.py           fuentes -> bronze
   proceso/02_silver.py           bronze -> silver
   proceso/03_gold.py             silver -> gold
+  proceso/04_serving.py          gold -> PostgreSQL (gamevault_serving) para Power BI
   proceso/gamevault/             paquete con la lógica (config, fuentes, silver, gold, tablas)
   reversion/revertir_ambiente.py borra tablas, rutas físicas, Volumes y esquemas
   datasets/                      insumos: descarga de IGDB, origen de RAWG, plantillas de la biblioteca
+                                 y el notebook que carga la base de origen en PostgreSQL
   seguridad/                     grupos, usuarios y permisos (etapa 2)
   delta-sharing/                 share de gold para un socio (etapa 2)
   dashboard/                     tablero de Power BI (etapa 2)
@@ -65,20 +67,37 @@ databricks-app/
 
 Para pasar a la etapa 2 solo cambian las variables del bundle; el código de bronze, silver y gold es el mismo.
 
-## Cómo desplegar en dev
+## Recursos de Azure (etapa 2)
+
+| Recurso | Nombre | Para qué |
+| --- | --- | --- |
+| Grupo de recursos | `rg-gamevault` | Agrupa todo el proyecto |
+| ADLS Gen2 | `stgamevaultbg64` | Contenedores `landing` (fuente IGDB), `bronze` y `catalogo` (tablas Delta) |
+| PostgreSQL flexible | `pg-gamevault-bg64` | Bases `gamevault_source` (fuente 2) y `gamevault_serving` (salida para Power BI) |
+| Key Vault | `kv-gamevault-bg64` | Secretos `pg-usuario` y `pg-clave`, leídos desde el secret scope `gamevault` |
+| Identidad administrada | `id-gamevault` | Identidad con *Storage Blob Data Contributor* sobre el data lake |
+| Access Connector | `ac-gamevault` | Puente entre Databricks y la identidad (storage credential `cred_gamevault`) |
+| Azure Databricks | `dbw-gamevault` | Workspace Premium con Unity Catalog |
+
+## Cómo desplegar en Azure
+
+1. Carga los datos de origen: los JSONL de IGDB en `landing/igdb/<endpoint>/` y los tres CSV en `landing/postgres/`; después corre una vez `datasets/postgres/cargar_en_postgres.py` para crear las tablas de la base de origen.
+2. Despliega y corre: `databricks bundle deploy -t dev` y `databricks bundle run gamevault_etl -t dev` (o desde el panel Deployments de la Git folder). `PrepAmb` crea las ubicaciones externas, el catálogo en el data lake y sus esquemas.
+
+## Cómo desplegar en Free Edition (etapa 1)
 
 Todos los comandos se corren dentro de `databricks-app/`.
 
 1. Instala la [CLI de Databricks](https://docs.databricks.com/aws/en/dev-tools/cli/install) e inicia sesión:
    `databricks auth login --host https://<tu-workspace>`
    (o, desde una Git folder del workspace, abre `databricks-app/databricks.yml` y usa el panel Deployments).
-2. Despliega en dev: `databricks bundle deploy -t dev`
-3. En Free Edition, crea primero el catálogo `gamevault_dev` desde Catalog > + > Create catalog (Default Storage); por código no se puede. Después crea los esquemas y los Volumes corriendo solo la primera tarea: `databricks bundle run gamevault_etl -t dev --only preparar_catalogo`
+2. Despliega con el target `free`: `databricks bundle deploy -t free`
+3. En Free Edition, crea primero el catálogo `gamevault_dev` desde Catalog > + > Create catalog (Default Storage); por código no se puede. Después crea los esquemas y los Volumes corriendo solo la primera tarea: `databricks bundle run gamevault_etl -t free --only preparar_catalogo`
 4. Sube los datos al Volume `bronze.raw` (Catalog Explorer > Upload) con esta forma (ver `datasets/README.md`):
    - `igdb/games/*.jsonl`, `igdb/platforms/*.jsonl`, ... (lo que genera `datasets/igdb/igdb_descarga.py`)
    - `postgres/rawg_games.csv` (el CSV de RAWG de Kaggle, renombrado)
    - `postgres/mis_plataformas.csv` y `postgres/mi_biblioteca.csv` (copia las de `datasets/postgres/` y edítalas)
-5. Corre el Job completo: `databricks bundle run gamevault_etl -t dev`
+5. Corre el Job completo: `databricks bundle run gamevault_etl -t free`
 
 ## CI/CD
 

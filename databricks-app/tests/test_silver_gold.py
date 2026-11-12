@@ -157,3 +157,16 @@ def test_gold_lanzamientos_y_biblioteca(s):
     lib = {r["game_name"]: r for r in gold.my_library(s["my_library"], s["games"], s["platforms"]).collect()}
     assert lib["The Legend of Zelda: Ocarina of Time 3D"]["platform_name"] == "Nintendo 3DS"
     assert lib["Juego que no existe"]["matched_igdb"] is False
+
+
+def test_serving_aplana_listas_y_estructuras(spark):
+    from gamevault.serving import columnas_simples
+
+    df = spark.createDataFrame(
+        [(1, ["Nintendo 64", "Nintendo 3DS"], {"a": 1})],
+        "id int, platforms array<string>, extra struct<a:int>",
+    )
+    fila = columnas_simples(df).collect()[0]
+    assert fila.platforms == "Nintendo 64, Nintendo 3DS"
+    assert fila.extra == '{"a":1}'
+    assert dict(columnas_simples(df).dtypes) == {"id": "int", "platforms": "string", "extra": "string"}
