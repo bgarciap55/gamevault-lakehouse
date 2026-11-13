@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "value": "adf-gamevault-bg64"
+        },
+        "ls_databricks_properties_typeProperties_existingClusterId": {
+            "value": "1113-145806-p77s2nqz"
+        }
+    }
+}
