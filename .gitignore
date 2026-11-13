@@ -6,3 +6,6 @@ __pycache__/
 spark-warehouse/
 metastore_db/
 derby.log
+
+# Credenciales de Delta Sharing
+*.share

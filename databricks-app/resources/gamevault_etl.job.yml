@@ -1,4 +1,4 @@
-# Job del ETL: preparar_catalogo -> bronze -> silver -> gold -> serving. Las tareas no declaran cluster, así que corren en serverless
+# Job del ETL: preparar_catalogo -> (permisos, bronze -> silver -> gold -> serving). Las tareas no declaran cluster, así que corren en serverless
 # (lo único que hay en Free Edition). En Azure se puede agregar un job cluster.
 
 resources:
@@ -25,11 +25,20 @@ resources:
           default: ${var.cuenta_adls}
         - name: credencial
           default: ${var.credencial}
+        # Lo llena Databricks en cada corrida; seguridad/permisos lo usa para dar permisos sobre el propio Job
+        - name: job_id
+          default: "{{job.id}}"
 
       tasks:
         - task_key: preparar_catalogo
           notebook_task:
             notebook_path: ../PrepAmb/preparar_ambiente.py
+
+        - task_key: permisos
+          depends_on:
+            - task_key: preparar_catalogo
+          notebook_task:
+            notebook_path: ../seguridad/permisos.py
 
         - task_key: bronze
           depends_on:
