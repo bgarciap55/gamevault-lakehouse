@@ -27,7 +27,7 @@ El diagrama en imagen va en `evidencias/arquitectura.png`.
 ```
 databricks-app/
   databricks.yml                 bundle: variables y targets dev / prod
-  resources/gamevault_etl.job.yml  Job: preparar_catalogo -> bronze -> silver -> gold
+  resources/gamevault_etl.job.yml  Job: preparar_catalogo -> permisos y bronze -> silver -> gold -> serving
   PrepAmb/preparar_ambiente.py   crea esquemas y Volumes del catálogo (SDK, sin SQL)
   proceso/01_bronze.py           fuentes -> bronze
   proceso/02_silver.py           bronze -> silver
@@ -37,8 +37,8 @@ databricks-app/
   reversion/revertir_ambiente.py borra tablas, rutas físicas, Volumes y esquemas
   datasets/                      insumos: descarga de IGDB, origen de RAWG, plantillas de la biblioteca
                                  y el notebook que carga la base de origen en PostgreSQL
-  seguridad/                     grupos, usuarios y permisos (etapa 2)
-  delta-sharing/                 share de gold para un socio (etapa 2)
+  seguridad/permisos.py          permisos de Unity Catalog y del Job para dos grupos (SDK, sin GRANT)
+  delta-sharing/                 share de gold para un socio y cómo lo lee el socio
   dashboard/                     tablero de Power BI (etapa 2)
   certificaciones/               certificaciones de Databricks
   evidencias/                    capturas de corridas, Actions, servicios de Azure y arquitectura
