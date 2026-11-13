@@ -3,7 +3,7 @@
 # MAGIC # 04 · Serving (gold -> PostgreSQL)
 # MAGIC
 # MAGIC Copia las tablas de gold a la base transaccional de servicio (`gamevault_serving` en PostgreSQL),
-# MAGIC que es de donde lee el tablero de Power BI. Escribe por JDBC con PySpark, sin SQL.
+# MAGIC que es de donde lee el tablero de Power BI. Escribe con el conector nativo `postgresql` de PySpark (funciona en serverless), sin SQL.
 # MAGIC
 # MAGIC Solo corre en la etapa 2 (`modo_fuente=externo`) y si el bundle define `pg_url_serving`.
 

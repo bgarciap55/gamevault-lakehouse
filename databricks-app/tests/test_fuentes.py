@@ -90,3 +90,23 @@ def test_escribir_bronze_con_auditoria(spark, raw):
     assert leido.count() == 2
     assert {"_fecha_carga", "_origen", "_archivo"} <= set(leido.columns)
     assert {r["_origen"] for r in leido.collect()} == {"igdb"}
+
+
+def test_conexion_pg_separa_la_url_jdbc():
+    from gamevault.config import conexion_pg
+
+    url = "jdbc:postgresql://pg-gamevault-bg64.postgres.database.azure.com:5432/gamevault_source?sslmode=require"
+    assert conexion_pg(url) == {
+        "host": "pg-gamevault-bg64.postgres.database.azure.com",
+        "port": "5432",
+        "database": "gamevault_source",
+    }
+    assert conexion_pg("jdbc:postgresql://servidor/base")["port"] == "5432"
+
+
+@pytest.mark.parametrize("url", ["", "jdbc:mysql://x:3306/base", "jdbc:postgresql://servidor:5432/"])
+def test_conexion_pg_rechaza_urls_invalidas(url):
+    from gamevault.config import conexion_pg
+
+    with pytest.raises(ValueError):
+        conexion_pg(url)
