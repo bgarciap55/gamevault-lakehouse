@@ -125,6 +125,7 @@ Antes del primer despliegue a prod hay que crear el catálogo `gamevault_prod` y
 | --- | --- | --- |
 | 2026-11-03 | Free Edition, `gamevault_dev` | Job completo en 3m44s. Bronze: 17.356 juegos IGDB, 74.847 lanzamientos, 474.417 filas RAWG. Silver: 10.322 juegos IGDB con pareja en RAWG (59 %). |
 | 2026-11-03 | Free Edition, `gamevault_dev` | Corrección de relaciones duplicadas: Ocarina of Time muestra 3 versiones correctas (1 addon, Master Quest, y 2 remakes) |
+| 2026-11-13 | Azure, `gamevault_dev` (serverless) | Job completo en 3m37s leyendo de ADLS y PostgreSQL. Mismos conteos que Free Edition; gold publicado en `gamevault_serving` (game_releases 72.956 filas). Evidencia: `evidencias/job_etl_dev_ok.png`. |
 
 ## Uso de herramientas de IA
 
