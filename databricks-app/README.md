@@ -62,7 +62,7 @@ databricks-app/
 | | Etapa 1: `modo_fuente=volume` | Etapa 2: `modo_fuente=externo` |
 | --- | --- | --- |
 | JSONL de IGDB | `/Volumes/<catálogo>/bronze/raw/igdb/<endpoint>/` | `abfss://landing@<cuenta>.dfs.core.windows.net/igdb/<endpoint>/` |
-| RAWG y biblioteca | `/Volumes/<catálogo>/bronze/raw/postgres/<tabla>.csv` | PostgreSQL por JDBC |
+| RAWG y biblioteca | `/Volumes/<catálogo>/bronze/raw/postgres/<tabla>.csv` | PostgreSQL con el conector `postgresql` |
 | Salida de bronze | `/Volumes/<catálogo>/bronze/archivos/` | `abfss://bronze@<cuenta>.dfs.core.windows.net/` |
 
 Para pasar a la etapa 2 solo cambian las variables del bundle; el código de bronze, silver y gold es el mismo.

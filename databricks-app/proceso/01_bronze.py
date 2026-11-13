@@ -8,7 +8,7 @@
 # MAGIC | Fuente | Etapa 1 (`volume`) | Etapa 2 (`externo`) |
 # MAGIC | --- | --- | --- |
 # MAGIC | JSONL de IGDB | `/Volumes/<catálogo>/bronze/raw/igdb/` | `abfss://landing@<cuenta>.dfs.core.windows.net/igdb/` |
-# MAGIC | RAWG y biblioteca | CSV en `/Volumes/<catálogo>/bronze/raw/postgres/` | PostgreSQL por JDBC |
+# MAGIC | RAWG y biblioteca | CSV en `/Volumes/<catálogo>/bronze/raw/postgres/` | PostgreSQL (conector `postgresql`) |
 
 # COMMAND ----------
 

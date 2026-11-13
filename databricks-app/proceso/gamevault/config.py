@@ -6,6 +6,7 @@ y en la etapa 1 (Volumes) o en la etapa 2 (ADLS + PostgreSQL).
 """
 
 from dataclasses import dataclass, field
+from urllib.parse import urlparse
 
 MODOS_FUENTE = ("volume", "externo")
 FORMATOS_BRONZE = ("parquet", "avro")
@@ -45,3 +46,23 @@ class Config:
             object.__setattr__(self, "ruta_raw", f"{volumes}/raw")
         if not self.ruta_bronze:
             object.__setattr__(self, "ruta_bronze", f"{volumes}/archivos")
+
+
+def conexion_pg(url: str) -> dict:
+    """Separa una URL JDBC de PostgreSQL en las opciones del conector "postgresql" de Databricks.
+
+    jdbc:postgresql://servidor:5432/base?sslmode=require -> {"host": "servidor", "port": "5432", "database": "base"}
+
+    Usamos el conector nativo "postgresql" y no el genérico "jdbc" porque el cómputo serverless
+    solo permite escribir con conectores nativos.
+    """
+    if not url.startswith("jdbc:postgresql://"):
+        raise ValueError(f"Se esperaba una URL jdbc:postgresql://..., no {url!r}")
+    partes = urlparse(url[len("jdbc:"):])
+    if not partes.hostname or not partes.path.strip("/"):
+        raise ValueError(f"A la URL le falta el servidor o la base: {url!r}")
+    return {
+        "host": partes.hostname,
+        "port": str(partes.port or 5432),
+        "database": partes.path.strip("/"),
+    }
