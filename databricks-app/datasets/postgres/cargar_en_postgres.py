@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # Datasets · Cargar la base de origen en PostgreSQL
 # MAGIC
@@ -40,14 +44,14 @@ for tabla in TABLAS:
         .csv(f"{ruta_csv}/{tabla}.csv")
     )
     (
-        df.write.format("jdbc")
+        df.write.format("postgresql")
         .mode("overwrite")
-        .option("url", pg_url)
+        .option("host", "pg-gamevault-bg64.postgres.database.azure.com")
+        .option("port", "5432")
+        .option("database", "gamevault_source")
         .option("dbtable", f"public.{tabla}")
         .option("user", usuario)
         .option("password", clave)
-        .option("driver", "org.postgresql.Driver")
-        .option("batchsize", 10000)
         .save()
     )
     print(f"  {tabla:<18} {df.count():>9,} filas -> gamevault_source.public.{tabla}")
