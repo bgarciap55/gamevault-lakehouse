@@ -14,3 +14,7 @@ Capturas `.png` que muestran que el proyecto funciona:
 | `test_ubicacion_externa.png` | Prueba de conexión de la ubicación externa |
 | `job_etl_dev_ok.png` | Job gamevault_etl_dev completo en Azure (serverless) |
 | `catalogo_gold_dev.png` | Tablas gold de gamevault_dev guardadas en el data lake |
+| `adf_pipeline_ok.png` | Canalización de ADF que lanzó el Job de Databricks (Correcto) |
+| `adf_trigger.png` | Desencadenador semanal de ADF iniciado |
+| `permisos_ok.png` | Permisos efectivos de los grupos en gamevault_prod |
+| `delta_sharing.png` | Share gamevault_gold con 3 tablas de gold y el destinatario socio_gamevault |
