@@ -7,6 +7,7 @@ Tablero de Power BI sobre la base de servicio en PostgreSQL (`gamevault_serving`
 | `gamevault.pbix` | Tablero de Power BI Desktop (modo importación) |
 | `dashboard_resumen.png` | Página Resumen: juegos, versiones, lanzamientos, versiones por tipo, lanzamientos por año y top 10 plataformas |
 | `dashboard_explorador.png` | Página Explorador: versiones de un juego y si se pueden jugar en mis plataformas (ej. Ocarina of Time) |
+| gamevault.pdf | Exportación del tablero para verlo sin Power BI |
 
 ## Conexión
 
