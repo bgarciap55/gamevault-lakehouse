@@ -4,10 +4,9 @@ Capturas `.png` que muestran que el proyecto funciona:
 
 | Archivo | Qué muestra |
 | --- | --- |
-| `workflow_ok.png` | Corrida exitosa del Job `gamevault_etl` (preparar_catalogo -> bronze -> silver -> gold) |
-| `actions_ok.png` | GitHub Actions en verde (CI y CD a producción) |
+| `actions_ok.png` | CD a producción en GitHub Actions, aprobado en el environment `produccion` |
 | `servicios_azure.png` | Grupo de recursos en Azure: Databricks, ADLS, PostgreSQL, Key Vault, Data Factory |
-| `arquitectura.png` | Diagrama de la arquitectura |
+| `arquitectura.png` | Diagrama de la arquitectura (fuentes, capas, salidas, seguridad y CI/CD) |
 | `metastore_gamevault.png` | Metastore propio de Unity Catalog asignado al workspace |
 | `credencial_identidad_administrada.png` | Storage credential con la identidad administrada id-gamevault |
 | `ubicacion_externa_landing.png` | Ubicación externa del contenedor landing |
